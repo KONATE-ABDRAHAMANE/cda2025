@@ -1,0 +1,46 @@
+security:
+    providers:
+        client_provider:
+            entity:
+                class: App\Entity\Client
+                property: email
+        employe_provider:
+            entity:
+                class: App\Entity\Employe
+                property: email
+
+    firewalls:
+        main:
+            pattern: ^/clients/connexion
+            stateless: true
+            json_login:
+                check_path: /clients/connexion
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                provider: client_provider
+
+        api:
+            pattern: ^/clients
+            stateless: true
+            jwt: 
+                provider: client_provider
+
+    access_control:
+        - { path: ^/clients/connexion, roles: PUBLIC_ACCESS }
+        - { path: ^/clients/inscription, roles: PUBLIC_ACCESS }
+        - { path: ^/clients/reinitialiser-mot-de-passe, roles: PUBLIC_ACCESS }
+        - { path: ^/clients/mon-profil, roles: ROLE_CLIENT }
+        - { path: ^/clients, roles: IS_AUTHENTICATED_FULLY }
+
+    password_hashers:
+        App\Entity\Client:
+            algorithm: auto
+        App\Entity\Employe:
+            algorithm: auto
+
+    role_hierarchy:
+        ROLE_CLIENT: []
+        ROLE_EMPLOYE: []
+        ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_CLIENT]
