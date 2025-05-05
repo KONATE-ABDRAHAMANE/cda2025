@@ -159,7 +159,7 @@ class EmployeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'api_employe_delete', methods: ['DELETE'])]
-    #[IsGranted('ROLE_ADMIN')]
+   
     public function delete(Employe $employe): JsonResponse
     {
         $this->entityManager->remove($employe);
