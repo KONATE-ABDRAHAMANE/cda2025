@@ -54,6 +54,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'client', orphanRemoval: true)]
     private Collection $commandes;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $dateGeneration = null;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -218,6 +221,18 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
                 $commande->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateGeneration(): ?\DateTime
+    {
+        return $this->dateGeneration;
+    }
+
+    public function setDateGeneration(?\DateTime $dateGeneration): static
+    {
+        $this->dateGeneration = $dateGeneration;
 
         return $this;
     }

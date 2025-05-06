@@ -1,46 +1,39 @@
+# config/packages/security.yaml
 security:
+    password_hashers:
+        App\Entity\Client:
+            algorithm: auto
+
     providers:
-        client_provider:
+        app_user_provider:
             entity:
                 class: App\Entity\Client
-                property: email
-        employe_provider:
-            entity:
-                class: App\Entity\Employe
-                property: email
+                property: email  # Le champ utilisé pour l'authentification
 
     firewalls:
-        main:
-            pattern: ^/clients/connexion
+        # Désactive la sécurité pour les routes de développement
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Configuration pour la route de login
+        login:
+            pattern: ^/clients/login
             stateless: true
             json_login:
-                check_path: /clients/connexion
+                check_path: /clients/login  # Doit correspondre à la route de votre contrôleur
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-                provider: client_provider
 
+        # Firewall principal pour l'API
         api:
-            pattern: ^/clients
+            pattern: ^/clients  # Toutes les routes commençant par /api
             stateless: true
-            jwt: 
-                provider: client_provider
+            provider: app_user_provider
+            jwt: ~  # Activation automatique de l'authentification JWT
 
     access_control:
-        - { path: ^/clients/connexion, roles: PUBLIC_ACCESS }
-        - { path: ^/clients/inscription, roles: PUBLIC_ACCESS }
-        - { path: ^/clients/reinitialiser-mot-de-passe, roles: PUBLIC_ACCESS }
-        - { path: ^/clients/mon-profil, roles: ROLE_CLIENT }
-        - { path: ^/clients, roles: IS_AUTHENTICATED_FULLY }
-
-    password_hashers:
-        App\Entity\Client:
-            algorithm: auto
-        App\Entity\Employe:
-            algorithm: auto
-
-    role_hierarchy:
-        ROLE_CLIENT: []
-        ROLE_EMPLOYE: []
-        ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_CLIENT]
+        - { path: ^/clients/login, roles: PUBLIC_ACCESS }  # Seul le login est public
+        - { path: ^/clients, roles: IS_AUTHENTICATED_FULLY }  # Toutes les autres routes API protégées
