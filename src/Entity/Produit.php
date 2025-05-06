@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_NOM_PRODUIT', fields: ['nomProduit'])]
 class Produit
 {
     #[ORM\Id]
@@ -26,14 +29,22 @@ class Produit
     #[ORM\Column]
     private ?int $stock = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $images = [];
-
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Categorie $categorie = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Promotion $promotion = null;
+
+    /**
+     * @var Collection<int, Image>
+     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'produit', orphanRemoval: true)]
+    private Collection $image;
+
+    public function __construct()
+    {
+        $this->image = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -88,17 +99,7 @@ class Produit
         return $this;
     }
 
-    public function getImages(): array
-    {
-        return $this->images;
-    }
 
-    public function setImages(array $images): static
-    {
-        $this->images = $images;
-
-        return $this;
-    }
 
     public function getCategorie(): ?Categorie
     {
@@ -120,6 +121,36 @@ class Produit
     public function setPromotion(?Promotion $promotion): static
     {
         $this->promotion = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImage(): Collection
+    {
+        return $this->image;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->image->contains($image)) {
+            $this->image->add($image);
+            $image->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->image->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getProduit() === $this) {
+                $image->setProduit(null);
+            }
+        }
 
         return $this;
     }

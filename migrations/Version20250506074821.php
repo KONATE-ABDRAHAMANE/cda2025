@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250505090611 extends AbstractMigration
+final class Version20250506074821 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,10 @@ final class Version20250505090611 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE commande ADD statut_commande VARCHAR(50) NOT NULL
+            CREATE TABLE image (id INT AUTO_INCREMENT NOT NULL, produit_id INT NOT NULL, lien LONGTEXT NOT NULL, INDEX IDX_C53D045FF347EFB (produit_id), UNIQUE INDEX UNIQ_IDENTIFIER_LIEN (lien), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE fournisseur CHANGE nom nom_fournisseur VARCHAR(75) NOT NULL
+            ALTER TABLE image ADD CONSTRAINT FK_C53D045FF347EFB FOREIGN KEY (produit_id) REFERENCES produit (id)
         SQL);
     }
 
@@ -32,10 +32,10 @@ final class Version20250505090611 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE commande DROP statut_commande
+            ALTER TABLE image DROP FOREIGN KEY FK_C53D045FF347EFB
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE fournisseur CHANGE nom_fournisseur nom VARCHAR(75) NOT NULL
+            DROP TABLE image
         SQL);
     }
 }
