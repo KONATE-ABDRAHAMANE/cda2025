@@ -6,6 +6,7 @@ use App\Repository\FournisseurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FournisseurRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_NOM_FOURNISSEUR', fields: ['nomFournisseur'])]
 class Fournisseur
 {
     #[ORM\Id]
