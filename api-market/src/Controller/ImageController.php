@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/images')]
+#[Route('/api/images')]
 class ImageController extends AbstractController
 {
     //  Ajouter des image

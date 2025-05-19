@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/employes')]
+#[Route('/api/employes')]
 class EmployeController extends AbstractController
 {
     public function __construct(

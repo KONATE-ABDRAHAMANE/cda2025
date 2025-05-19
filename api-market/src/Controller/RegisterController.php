@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface; // Import
 
-#[Route('/clients')]
+#[Route('/api/clients')]
 class RegisterController extends AbstractController
 {
     public function __construct(

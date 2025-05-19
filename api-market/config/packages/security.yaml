@@ -18,10 +18,10 @@ security:
 
         # Configuration pour la route de login
         login:
-            pattern: ^/clients/login
+            pattern: ^/api/clients/login
             stateless: true
             json_login:
-                check_path: /clients/login  # Doit correspondre à la route de votre contrôleur
+                check_path: /api/clients/login  # Doit correspondre à la route de votre contrôleur
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -29,7 +29,7 @@ security:
 
         # Firewall principal pour l'API
         api:
-            pattern: ^/clients  # Toutes les routes commençant par /api
+            pattern: ^/api/clients  # Toutes les routes commençant par /api
             stateless: true
             provider: app_user_provider
             jwt: ~  # Activation automatique de l'authentification JWT
