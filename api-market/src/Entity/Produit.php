@@ -41,6 +41,9 @@ class Produit
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'produit', orphanRemoval: true)]
     private Collection $image;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $creation = null;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
@@ -151,6 +154,18 @@ class Produit
                 $image->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreation(): ?\DateTime
+    {
+        return $this->creation;
+    }
+
+    public function setCreation(\DateTime $creation): static
+    {
+        $this->creation = $creation;
 
         return $this;
     }

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/produits')]
+#[Route('/api/produits')]
 class ProduitController extends AbstractController
 {
     // CREATE
@@ -24,7 +24,7 @@ class ProduitController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $produit = new Produit();
-        $produit->setNomProduit($data['nomProduit'] );
+        $produit->setNomProduit($data['nomProduit']);
         $produit->setDescription($data['description'] ?? null);
         $produit->setPrix($data['prix']);
         $produit->setStock($data['stock'] ?? 0);
@@ -58,6 +58,7 @@ class ProduitController extends AbstractController
 
     // UPDATE
     #[Route('/{id}', name: 'produit_update', methods: ['PUT'])]
+    
     public function update(
         Produit $produit,
         Request $request,
@@ -90,17 +91,38 @@ class ProduitController extends AbstractController
         return $this->json(null, 204);
     }
 
-    // Sérialisation simplifiée
+    // Sérialisation simplifiée avec promo et prix réduit
     private function serializeProduit(Produit $produit): array
     {
+        $promotion = $produit->getPromotion();
+
+        // Calcul du prix avec réduction si promo valide
+        $prixReduction = null;
+        if ($promotion !== null) {
+            $now = new \DateTime();
+            if ($promotion->getDebut() <= $now && $promotion->getFin() >= $now) {
+                $reduction = $promotion->getReduction();
+                $prixReduction = round($produit->getPrix() - (($produit->getPrix() * $promotion->getReduction()) / 100), 2);
+
+            }
+        }
+
         return [
             'id' => $produit->getId(),
             'nomProduit' => $produit->getNomProduit(),
             'description' => $produit->getDescription(),
             'prix' => $produit->getPrix(),
+            'prixReduction' => $prixReduction,
             'stock' => $produit->getStock(),
             'categorie' => $produit->getCategorie()?->getId(),
-            'promotion' => $produit->getPromotion()?->getId()
+            'promotion' => $promotion ? [
+                'id' => $promotion->getId(),
+                'titre' => $promotion->getTitre(),
+                'debut' => $promotion->getDebut()->format('Y-m-d'),
+                'fin' => $promotion->getFin()->format('Y-m-d'),
+                'reduction' => $promotion->getReduction()
+            ] : null,
+            'images' => array_map(fn($image) => $image->getLien(), $produit->getImage()->toArray()),
         ];
     }
 }

@@ -4,7 +4,7 @@ api_client_register:
     controller: App\Controller\RegisterController::register
     methods: POST
 
-api_client_login:
+api_login:
     path: /login
     controller: App\Controller\RegisterController::login
     methods: POST

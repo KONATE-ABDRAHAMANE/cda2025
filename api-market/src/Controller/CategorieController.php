@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/categories')]
+#[Route('/api/categories')]
 class CategorieController extends AbstractController
 {
     // CREATE

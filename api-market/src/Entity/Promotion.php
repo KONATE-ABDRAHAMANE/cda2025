@@ -31,6 +31,9 @@ class Promotion
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'promotion')]
     private Collection $produits;
 
+    #[ORM\Column]
+    private ?int $reduction = null;
+
     public function __construct()
     {
         $this->produits = new ArrayCollection();
@@ -103,6 +106,18 @@ class Promotion
                 $produit->setPromotion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getReduction(): ?int
+    {
+        return $this->reduction;
+    }
+
+    public function setReduction(int $reduction): static
+    {
+        $this->reduction = $reduction;
 
         return $this;
     }

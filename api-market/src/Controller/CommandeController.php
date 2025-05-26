@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/commandes')]
+#[Route('/api/commandes')]
 class CommandeController extends AbstractController
 {
     private EntityManagerInterface $em;
